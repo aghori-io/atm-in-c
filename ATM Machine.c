@@ -18,7 +18,7 @@ int main() {
 	if(inpPin==PIN){ //program proceeds if the user input pin matches the predefined pincode, else it restarts from pinEntry
 		amtEntry:
 		printf("Enter the amount you want to withdraw: \a");
-		scanf("%2f", &wdrawAmt);
+		scanf("%f", &wdrawAmt);
 		
 		if (amt<wdrawAmt) {
 			printf("\nInsufficient Balance\n\n\a\a");
