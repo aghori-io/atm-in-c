@@ -1,56 +1,88 @@
-//This is a simple ATM machine program in C.
-
 #include<stdio.h>
-#define PIN 1234 //default pincode for the ATM
+#include<ctype.h>
+
+#define DEFAULT_PIN 1234
+#define INITIAL_BALANCE 9999.99
+
+void clearInputBuffer() {
+    int c;
+    while ((c = getchar()) != '\n' && c != EOF);
+}
 
 int main() {
-	char proceed; //variable proceed takes a single key entry as sign to imitate the card has been inserted
-	int inpPin, re; //inpPin variable takes user input pincode
-	float amt, wdrawAmt;
-	
-	amt = 9999.99;
-	printf("Insert your ATM \a");
-	scanf("%c", &proceed);
-	pinEntry:
-	printf("Enter your pin: \a");
-	scanf("%d", &inpPin);
-	
-	if(inpPin==PIN){ //program proceeds if the user input pin matches the predefined pincode, else it restarts from pinEntry
-		amtEntry:
-		printf("Enter the amount you want to withdraw: \a");
-		scanf("%f", &wdrawAmt);
-		
-		if (amt<wdrawAmt) {
-			printf("\nInsufficient Balance\n\n\a\a");
-			goto amtEntry;
-		}
-			else {
-				amt = amt - wdrawAmt; //calculation of remaining balance in the account
-				printf("________________\n");
-					printf("Please Collect Your Cash \a\nLast Withdraw Amt: %.2f \n", wdrawAmt); 
-					printf("Remaining Balance: %.2f \n", amt); //limiting amount to 2 decimal points 
-					printf("________________\nThank You");
-					printf("Withdraw Again? \t 0. No 1. Yes \n"); //confirmation for rewithdrawal - if the user wants to withdraw amount again, the program goes to pinEntry
-					fflush(stdin); //buffer clearance
-					scanf("%d", &re); 
-					if(re==1){
-						goto pinEntry;
-					}
-					else goto finish;
-					
-				}
-				
-				
-			
-		
-		 }
-		else {
-			printf("WRONG PIN \n_________\n\a\a");
-			goto pinEntry;
-		}
-		finish:
-			return 0;
-	
-	}
-	
-	
+    char proceed;
+    int inpPin, re, option;
+    float balance = INITIAL_BALANCE, wdrawAmt;
+    int userPIN = DEFAULT_PIN;  // Variable to store the user's PIN
+
+    printf("Successfully inserted ATM Card.\n");
+
+    pinEntry:
+    printf("Enter your PIN: ");
+    if (scanf("%d", &inpPin) != 1 || inpPin < 1000 || inpPin > 9999) {
+        printf("Invalid PIN. Please enter a 4-digit number.\n");
+        clearInputBuffer(); // Clear input buffer
+        goto pinEntry;
+    }
+
+    if (inpPin == userPIN) {
+        menu:
+        printf("\nATM Menu:\n1. Withdraw\n2. Display Balance\n3. Change PIN\n4. Exit\n");
+        printf("Enter your choice (1-4): ");
+        scanf("%d", &option);
+
+        switch(option) {
+            case 1:
+                amtEntry:
+                printf("Enter the amount you want to withdraw: ");
+                scanf("%f", &wdrawAmt);
+
+                if (balance < wdrawAmt) {
+                    printf("\nInsufficient Balance\n\n");
+                    goto amtEntry;
+                } else {
+                    balance -= wdrawAmt;
+                    printf("________________\n");
+                    printf("Please Collect Your Cash\nLast Withdrawal Amount: %.2f\n", wdrawAmt);
+                    printf("Remaining Balance: %.2f\n", balance);
+                    printf("________________\nThank You\n");
+                    printf("Withdraw Again? (0. No, 1. Yes): ");
+                    scanf("%d", &re);
+
+                    if (re == 1) {
+                        goto pinEntry;
+                    } else {
+                        printf("Transaction Completed.\n");
+                    }
+                }
+                break;
+
+            case 2:
+                printf("Your Current Balance: %.2f\n", balance);
+                goto menu;
+
+            case 3:
+                printf("Enter new PIN: ");
+                if (scanf("%d", &userPIN) != 1 || userPIN < 1000 || userPIN > 9999) {
+                    printf("Invalid PIN. Please enter a 4-digit number.\n");
+                    clearInputBuffer(); // Clear input buffer
+                    goto menu;
+                }
+                printf("PIN successfully changed!\n");
+                goto menu;
+
+            case 4:
+                printf("Transaction Completed.\n");
+                break;
+
+            default:
+                printf("Invalid option. Please try again.\n");
+                goto menu;
+        }
+    } else {
+        printf("Wrong PIN\n_________\n\n");
+        goto pinEntry;
+    }
+
+    return 0;
+}
