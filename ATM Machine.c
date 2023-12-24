@@ -11,7 +11,7 @@ void clearInputBuffer() {
 
 int main() {
     char proceed;
-    int inpPin, re, option;
+    int inputPin, re, option;
     float balance = INITIAL_BALANCE, wdrawAmt;
     int userPIN = DEFAULT_PIN;  // Variable to store the user's PIN
 
@@ -19,13 +19,13 @@ int main() {
 
     pinEntry:
     printf("Enter your PIN: ");
-    if (scanf("%d", &inpPin) != 1 || inpPin < 1000 || inpPin > 9999) {
+    if (scanf("%d", &inputPin) != 1 || inputPin < 1000 || inputPin > 9999) {
         printf("Invalid PIN. Please enter a 4-digit number.\n");
         clearInputBuffer(); // Clear input buffer
         goto pinEntry;
     }
 
-    if (inpPin == userPIN) {
+    if (inputPin == userPIN) {
         menu:
         printf("\nATM Menu:\n1. Withdraw\n2. Display Balance\n3. Change PIN\n4. Exit\n");
         printf("Enter your choice (1-4): ");
